@@ -33,6 +33,7 @@ import { Link } from "react-router-dom";
 export function SortableTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
   const [TABLE_ROWS, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State untuk nilai pencarian
   const handleExportCSV = () => {
@@ -69,9 +70,10 @@ export function SortableTable() {
     );
     return filteredData;
   };
-  
+
   useEffect(() => {
     const fetchPost = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_KEY_URL}/posts`
@@ -81,12 +83,13 @@ export function SortableTable() {
         setPosts(filteredData);
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
     };
-  
     fetchPost();
   }, [searchTerm]);
-  
+
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -146,135 +149,148 @@ export function SortableTable() {
               ))}
             </tr>
           </thead>
-          <tbody>
-            {currentItems.map(
-              (
-                {
-                  _id,
-                  name,
-                  no_kk,
-                  no_ktp,
-                  no_rt,
-                  no_rw,
-                  no_tps,
-                  no_hp,
-                  simpul,
-                },
-                index
-              ) => {
-                const isLast = index === TABLE_ROWS.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
+          {isLoading ? (
+            
+            <tbody className="flex justify-center items-center">
+            <Typography
+              variant="h3"
+              color="blue-gray"
+              className="text-center animate-bounce"
+            >
+              Loading ......
+            </Typography>
+            </tbody>
+          ) : (
+            <tbody>
+              {currentItems.map(
+                (
+                  {
+                    _id,
+                    name,
+                    no_kk,
+                    no_ktp,
+                    no_rt,
+                    no_rw,
+                    no_tps,
+                    no_hp,
+                    simpul,
+                  },
+                  index
+                ) => {
+                  const isLast = index === TABLE_ROWS.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
 
-                return (
-                  <tr key={name}>
-                    <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {index + 1}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        {/* <Avatar src={img} alt={name} size="sm" /> */}
+                  return (
+                    <tr key={name}>
+                      <td className={classes}>
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {name}
+                            {index + 1}
                           </Typography>
                         </div>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex flex-col">
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          {/* <Avatar src={img} alt={name} size="sm" /> */}
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {name}
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex flex-col">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {no_kk}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="w-max">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {no_ktp}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {no_kk}
+                          {no_rt}
                         </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="w-max">
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
-                          className="font-normal opacity-70"
+                          className="font-normal"
                         >
-                          {no_ktp}
+                          {no_rw}
                         </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {no_rt}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {no_rw}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {no_tps}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {no_hp}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {simpul}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Tooltip content="Edit Data">
-                        <Link to={`/posts/${_id}`}>
-                          <IconButton variant="text">
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Link>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                );
-              }
-            )}
-          </tbody>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {no_tps}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {no_hp}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {simpul}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Edit Data">
+                          <Link to={`/posts/${_id}`}>
+                            <IconButton variant="text">
+                              <PencilIcon className="h-4 w-4" />
+                            </IconButton>
+                          </Link>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+            </tbody>
+          )}
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
