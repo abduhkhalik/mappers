@@ -20,10 +20,12 @@ export function LoginCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { dispatch, isFetching } = useContext(Context);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // setIsLoading(true);
     dispatch({ type: "LOGIN_START" });
     try {
       const res = await axios.post(
@@ -34,6 +36,7 @@ export function LoginCard() {
         }
       );
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      // setIsLoading(false);
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE" });
       setError("Invalid username or password");
@@ -84,6 +87,15 @@ export function LoginCard() {
         </CardFooter>
       </Card>
       {error && <p className="text-center text-red-500">{error}</p>}
+      {isFetching && (
+        <Typography
+          variant="lead"
+          color="blue-gray"
+          className="text-center animate-bounce"
+        >
+          Loading......
+        </Typography>
+      )}
     </form>
   );
 }
@@ -92,11 +104,14 @@ export function DaftarCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [kecamatan, setKecamatan] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [error, setError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(false);
+    setIsLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_KEY_URL}/auth/register`,
@@ -106,6 +121,7 @@ export function DaftarCard() {
           kecamatan,
         }
       );
+      setIsLoading(false);
       res.data && window.location.replace("/login");
     } catch (err) {
       setError(true);
@@ -151,7 +167,13 @@ export function DaftarCard() {
           </Select>
         </CardBody>
         <CardFooter className="pt-0">
-          <Button type="submit" variant="gradient" fullWidth>
+          <Button
+            type="submit"
+            variant="gradient"
+            fullWidth
+            className="disabled:cursor-progress"
+            disabled={isLoading}
+          >
             Daftar
           </Button>
         </CardFooter>
@@ -163,11 +185,21 @@ export function DaftarCard() {
         </Link>
       </Typography>
       {error && <p className="text-center text-red-500">{error}</p>}
+      {isLoading && (
+        <Typography
+          variant="lead"
+          color="blue-gray"
+          className="text-center animate-bounce"
+        >
+          Loading......
+        </Typography>
+      )}
     </form>
   );
 }
 
 export function Formulir() {
+  const [data, setData] = useState([]);
   const [name, setName] = useState("");
   const [no_kk, setNokk] = useState("");
   const [no_ktp, setNoktp] = useState("");
@@ -177,6 +209,8 @@ export function Formulir() {
   const [no_hp, setNohp] = useState("");
   const [kelurahan, setKelurahan] = useState("");
   const [simpul, setSimpul] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   // const [data, setData] = useState({});
   const { user } = useContext(Context);
 
@@ -205,8 +239,29 @@ export function Formulir() {
   //   getDataKpu();
   // }, [no_ktp]);
 
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_KEY_URL}/posts`
+        );
+        setData(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getPost();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    const isNoKtpExists = data.some((post) => post.no_ktp === no_ktp);
+    if (isNoKtpExists) {
+      alert("No Ktp Sudah Terdaftar.");
+      setIsLoading(false);
+      return;
+    }
     const newPost = {
       name,
       no_kk,
@@ -219,14 +274,15 @@ export function Formulir() {
       kecamatan: user.kecamatan,
       simpul,
     };
-
     try {
       await axios.post(`${import.meta.env.VITE_API_KEY_URL}/posts`, newPost);
+      alert("Data Berhasil Terinpunt");
+      // Reset loading state to false
+      setIsLoading(false);
+      window.location.reload();
     } catch (err) {
       console.log(err);
-    } finally {
-      alert("Data Berhasil Terinpunt");
-      window.location.reload();
+      setIsLoading(false);
     }
   };
   return (
@@ -386,10 +442,18 @@ export function Formulir() {
             required
           />
         </div>
-
-        <Button type="submit" className="mt-6 w-full">
+        <Button
+          type="submit"
+          className="mt-6 w-full disabled:bg-blue-500"
+          disabled={isLoading}
+        >
           Submit
         </Button>
+        {isLoading && (
+          <Typography type="lead" color="blue-gray" className="animate-bounce">
+            Loading ......
+          </Typography>
+        )}
       </form>
     </Card>
   );
@@ -398,7 +462,7 @@ export function Formulir() {
 export function FormulirEdit() {
   const { id } = useParams();
   const [post, setPost] = useState({});
-
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [no_kk, setNokk] = useState("");
   const [no_ktp, setNoktp] = useState("");
@@ -434,6 +498,7 @@ export function FormulirEdit() {
   }, [id]);
 
   const handleUpdate = async () => {
+    setIsLoading(true);
     try {
       await axios.put(`${import.meta.env.VITE_API_KEY_URL}/posts/${id}`, {
         name,
@@ -450,8 +515,9 @@ export function FormulirEdit() {
     } catch (err) {
       console.log(err);
     } finally {
-      window.location.reload();
       alert("Update Berhasil");
+      setIsLoading(false);
+      window.location.reload();
     }
   };
   return (
@@ -663,9 +729,22 @@ export function FormulirEdit() {
           )}
         </div>
         {updateMode && (
-          <Button onClick={handleUpdate} className="mt-6 w-full">
+          <Button
+            onClick={handleUpdate}
+            disabled={isLoading}
+            className="mt-6 w-full disabled:cursor-progress"
+          >
             Update
           </Button>
+        )}
+        {isLoading && (
+          <Typography
+            variant="lead"
+            color="blue-gray"
+            className="text-center animate-bounce"
+          >
+            Loading......
+          </Typography>
         )}
       </form>
     </Card>

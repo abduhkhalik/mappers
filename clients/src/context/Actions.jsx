@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-export const LoginStart = (userCredentials) => ({
+/* eslint-disable react-refresh/only-export-components */
+export const LoginStart = (_userCredentials) => ({
   type: "LOGIN_START",
 });
 
@@ -27,4 +28,17 @@ export const UpdateSuccess = (user) => ({
 
 export const UpdateFailure = () => ({
   type: "UPDATE_FAILURE",
+});
+
+export const setDataLoading = () => ({
+  type: 'SET_DATA_LOADING',
+});
+
+export const setDataSuccess = () => ({
+  type: 'SET_DATA_SUCCESS',
+});
+
+export const setDataError = (error) => ({
+  type: 'SET_DATA_ERROR',
+  payload: error,
 });
