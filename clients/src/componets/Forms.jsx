@@ -208,11 +208,11 @@ export function Formulir() {
   const [no_tps, setNotps] = useState("");
   const [no_hp, setNohp] = useState("");
   const [kelurahan, setKelurahan] = useState("");
+  const [kecamatan, setKecamatan] = useState("");
   const [simpul, setSimpul] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // const [data, setData] = useState({});
-  const { user } = useContext(Context);
 
   // useEffect(() => {
   //   const getDataKpu = async () => {
@@ -271,7 +271,7 @@ export function Formulir() {
       no_tps,
       no_hp,
       kelurahan,
-      kecamatan: user.kecamatan,
+      kecamatan,
       simpul,
     };
     try {
@@ -319,6 +319,8 @@ export function Formulir() {
             size="lg"
             type="number"
             name="no_kk"
+            maxLength={16}
+            min={0}
             onChange={(e) => setNokk(e.target.value)}
             placeholder="Nomor KK"
             className=" w-full bg-white !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -334,6 +336,9 @@ export function Formulir() {
             size="lg"
             type="number"
             name="no_ktp"
+            maxLength={16}
+            pattern="[0-9]{16}"
+            min={0}
             onChange={(e) => setNoktp(e.target.value)}
             placeholder="Nomor KTP"
             className=" w-full bg-white !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -342,6 +347,19 @@ export function Formulir() {
             }}
             required
           />
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            PILIH KECAMATAN
+          </Typography>
+          <Select
+            className="bg-white"
+            onChange={(value) => setKecamatan(value)}
+          >
+            {dataKec.map((item, index) => (
+              <Option key={index} value={item.value}>
+                {item.label}
+              </Option>
+            ))}
+          </Select>
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             PILIH KELURAHAN
           </Typography>
@@ -361,7 +379,7 @@ export function Formulir() {
               Nomor RT
             </Typography>
             <Input
-              type="text"
+              type="number"
               name="no_rt"
               size="lg"
               onChange={(e) => setNort(e.target.value)}
@@ -378,7 +396,7 @@ export function Formulir() {
               Nomor RW
             </Typography>
             <Input
-              type="text"
+              type="number"
               name="no_rw"
               size="lg"
               onChange={(e) => setNorw(e.target.value)}
@@ -395,7 +413,7 @@ export function Formulir() {
               Nomor TPS
             </Typography>
             <Input
-              type="text"
+              type="number"
               name="no_tps"
               size="lg"
               onChange={(e) => setNotps(e.target.value)}
@@ -526,9 +544,13 @@ export function FormulirEdit() {
         <Typography variant="h4" color="blue-gray">
           Formulir Edit Data Calon Pemilih MAP
         </Typography>
-        <Button onClick={() => setUpdateMode(true)}>Edit</Button>
+        {!updateMode && (
+          <Button className="mt-5" onClick={() => setUpdateMode(true)}>
+            Edit
+          </Button>
+        )}
       </div>
-      <form className="mt-8 mb-2 w-full max-w-screen-xl px-4 py-2 bg-white rounded-lg">
+      <form className="mt-2 mb-2 w-full max-w-screen-xl px-4 py-2 bg-white rounded-lg">
         <div className="mb-1 flex flex-col gap-3">
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Nama Lengkap
@@ -560,6 +582,7 @@ export function FormulirEdit() {
               size="lg"
               type="number"
               name="no_kk"
+              maxLength={16}
               value={no_kk}
               onChange={(e) => setNokk(e.target.value)}
               placeholder="Nomor KK"
@@ -581,6 +604,7 @@ export function FormulirEdit() {
               type="number"
               name="no_ktp"
               size="lg"
+              maxLength={16}
               value={no_ktp}
               onChange={(e) => setNoktp(e.target.value)}
               placeholder="Nomor Kartu Tanda Penduduk"
@@ -591,7 +615,7 @@ export function FormulirEdit() {
             />
           ) : (
             <Typography variant="lead" color="blue-gray">
-              {post.no_kk}
+              {post.no_ktp}
             </Typography>
           )}
           {updateMode ? (

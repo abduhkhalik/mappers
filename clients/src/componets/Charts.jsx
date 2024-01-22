@@ -6,11 +6,9 @@ import {
 } from "@material-tailwind/react";
 import Chart from "react-apexcharts";
 import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Context } from "../context/Context";
 export function ChartsBar() {
-  const { user } = useContext(Context);
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -20,7 +18,7 @@ export function ChartsBar() {
         );
         setData(res.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     fetchData();
@@ -78,7 +76,8 @@ export function ChartsBar() {
     };
   });
 
-  console.log(dataByKecamatanArray);
+  // eslint-disable-next-line no-unused-vars
+  let grandTotalVotes = 0;
 
   const chartConfig = {
     type: "bar",
@@ -209,7 +208,6 @@ export function ChartsBar() {
               <React.Fragment key={kecamatanIndex}>
                 {kecamatan.kelurahanData.map((kelurahan, kelurahanIndex) => (
                   <tr key={kelurahanIndex} className="bg-white border-b">
-                    {/* Display kecamatan name only for the first kelurahan */}
                     {kelurahanIndex === 0 && (
                       <td
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
@@ -220,7 +218,6 @@ export function ChartsBar() {
                     )}
                     <td className="px-6 py-4">{kelurahan.kelurahan}</td>
                     <td className="px-6 py-4">{kelurahan.value}</td>
-                    {/* Display total votes only for the first kelurahan */}
                     {kelurahanIndex === 0 && (
                       <td
                         className="px-6 py-4"
@@ -235,6 +232,17 @@ export function ChartsBar() {
             ))}
           </table>
         </div>
+      </div>
+      <div className="bg-white flex items-center">
+        <p className="ml-5 font-bold">Total Suara Keseluruhan :</p>
+        {dataByKecamatanArray.map((kecamatan, kecamatanIndex) => {
+          grandTotalVotes += kecamatan.totalVotes;
+          return (
+            <p key={kecamatanIndex} className="mr-5">
+              {kecamatanIndex === 1 && <span>{grandTotalVotes}</span>}
+            </p>
+          );
+        })}
       </div>
     </>
   );
