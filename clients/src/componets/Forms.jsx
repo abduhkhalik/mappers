@@ -103,7 +103,6 @@ export function LoginCard() {
 export function DaftarCard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [kecamatan, setKecamatan] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState(false);
@@ -118,7 +117,6 @@ export function DaftarCard() {
         {
           username,
           password,
-          kecamatan,
         }
       );
       setIsLoading(false);
@@ -155,16 +153,6 @@ export function DaftarCard() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Select
-            label="Pilih Kecamatan"
-            onChange={(value) => setKecamatan(value)}
-          >
-            {dataKec.map((item, index) => (
-              <Option key={index} value={item.value}>
-                {item.label}
-              </Option>
-            ))}
-          </Select>
         </CardBody>
         <CardFooter className="pt-0">
           <Button
@@ -489,6 +477,7 @@ export function FormulirEdit() {
   const [no_tps, setNotps] = useState("");
   const [no_hp, setNohp] = useState("");
   const [kelurahan, setKelurahan] = useState("");
+  const [kecamatan, setKecamatan] = useState("");
   const [simpul, setSimpul] = useState("");
   const [updateMode, setUpdateMode] = useState(false);
 
@@ -507,6 +496,7 @@ export function FormulirEdit() {
         setNotps(res.data.no_tps);
         setNohp(res.data.no_hp);
         setKelurahan(res.data.kelurahan);
+        setKecamatan(res.data.kecamatan);
         setSimpul(res.data.simpul);
       } catch (err) {
         console.log(err);
@@ -526,6 +516,7 @@ export function FormulirEdit() {
         no_rw,
         no_tps,
         no_hp,
+        kecamatan,
         kelurahan,
         simpul,
       });
@@ -618,6 +609,29 @@ export function FormulirEdit() {
               {post.no_ktp}
             </Typography>
           )}
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Nama Kecamatan
+          </Typography>
+          {updateMode ? (
+            <Select
+              className="bg-white"
+              value={kecamatan}
+              onChange={(value) => setKecamatan(value)}
+            >
+              {dataKec.map((item, index) => (
+                <Option key={index} value={item.value}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
+          ) : (
+            <Typography variant="lead" color="blue-gray">
+              {post.kecamatan}
+            </Typography>
+          )}
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Nama Kelurahan
+          </Typography>
           {updateMode ? (
             <Select
               className="bg-white"

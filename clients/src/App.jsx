@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { Context } from "./context/Context";
 import PostId from "./pages/PostId";
 import Daftar from "./pages/Register";
+import Simpul from "./pages/Simpul";
 
 const App = () => {
   const { user } = useContext(Context);
@@ -17,6 +18,7 @@ const App = () => {
         {user ? <NavbarSimple /> : ""}
         <Routes>
           <Route path="/" element={user ? <Home /> : <Login />} />
+          <Route path="/simpul" element={user ? <Simpul /> : <Login />} />
           <Route path="/posts" element={user ? <Posts_List /> : <Login />} />
           <Route path="/posts/forms" element={user ? <Posts /> : <Login />} />
           <Route path="/posts/:id" element={user ? <PostId /> : <Login />} />

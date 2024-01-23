@@ -82,6 +82,14 @@ export function SortableTable() {
     );
     return filteredData;
   };
+  const handleSimpul = (data) => {
+    const filteredData = data.filter((row) =>
+      Object.values(row).some((value) =>
+        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+    return filteredData;
+  };
 
   useEffect(() => {
     const fetchPost = async () => {

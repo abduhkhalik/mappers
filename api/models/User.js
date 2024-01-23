@@ -11,10 +11,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    kecamatan: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );
