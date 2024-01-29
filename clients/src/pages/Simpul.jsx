@@ -6,7 +6,9 @@ function Simpul() {
   const [data, setData] = useState([]);
   const [ifLoading, setIfLoading] = useState(false);
 
-  const unitsCategory = [...new Set(data.map((vals) => vals.simpul))];
+  const unitsCategory = [
+    ...new Set(data.map((vals) => vals.simpul.toUpperCase())),
+  ];
 
   useEffect(() => {
     const fetchData = async () => {

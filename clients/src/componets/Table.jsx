@@ -74,22 +74,18 @@ export function SortableTable() {
   const currentItems = TABLE_ROWS.slice(indexOfFirstItem, indexOfLastItem);
   const currentPrint = TABLE_ROWS.slice(indexOfFirstPrint, indexOfLastPrint);
 
-  const handleSearch = (data) => {
+  const handleSearch = (data, searchTerm) => {
     const filteredData = data.filter((row) =>
-        Object.values(row).some((value) =>
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      Object.entries(row).some(([key, value]) =>
+        key !== "name" && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
     );
-
-    // Sorting based on 'no_tps'
     filteredData.sort((a, b) => {
-        // Assuming 'no_tps' is a numeric property
-        return a.no_tps - b.no_tps;
+      return a.no_tps - b.no_tps;
     });
-
     return filteredData;
-};
-
+  };
+  
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -99,7 +95,7 @@ export function SortableTable() {
           `${import.meta.env.VITE_API_KEY_URL}/posts`
         );
         const postData = res.data;
-        const filteredData = handleSearch(postData);
+        const filteredData = handleSearch(postData, searchTerm);
         setPosts(filteredData);
       } catch (err) {
         console.log(err);
@@ -152,9 +148,7 @@ export function SortableTable() {
           </div>
         </CardHeader>
         <CardBody className="overflow-scroll px-0">
-          <table
-            className="mt-4 w-full min-w-max table-auto text-left"
-          >
+          <table className="mt-4 w-full min-w-max table-auto text-left">
             <thead>
               <tr>
                 {TABLE_HEAD.map((head, index) => (
