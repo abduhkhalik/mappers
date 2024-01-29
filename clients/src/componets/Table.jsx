@@ -76,20 +76,20 @@ export function SortableTable() {
 
   const handleSearch = (data) => {
     const filteredData = data.filter((row) =>
-      Object.values(row).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
+        Object.values(row).some((value) =>
+            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
+
+    // Sorting based on 'no_tps'
+    filteredData.sort((a, b) => {
+        // Assuming 'no_tps' is a numeric property
+        return a.no_tps - b.no_tps;
+    });
+
     return filteredData;
-  };
-  const handleSimpul = (data) => {
-    const filteredData = data.filter((row) =>
-      Object.values(row).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    return filteredData;
-  };
+};
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -111,7 +111,7 @@ export function SortableTable() {
   }, [searchTerm]);
 
   return (
-    <div>
+    <>
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <div className="mb-8 flex items-center justify-between gap-8">
@@ -151,9 +151,8 @@ export function SortableTable() {
             </div>
           </div>
         </CardHeader>
-        <CardBody className="overflow-scroll  px-0">
+        <CardBody className="overflow-scroll px-0">
           <table
-            ref={componentRef}
             className="mt-4 w-full min-w-max table-auto text-left"
           >
             <thead>
@@ -498,15 +497,6 @@ export function SortableTable() {
                         {simpul}
                       </Typography>
                     </td>
-                    {/* <td className={classes}>
-                          <Tooltip content="Edit Data">
-                            <Link to={`/posts/${_id}`}>
-                              <IconButton variant="text">
-                                <PencilIcon className="h-4 w-4" />
-                              </IconButton>
-                            </Link>
-                          </Tooltip>
-                        </td> */}
                   </tr>
                 );
               }
@@ -514,6 +504,6 @@ export function SortableTable() {
           </tbody>
         )}
       </table>
-    </div>
+    </>
   );
 }

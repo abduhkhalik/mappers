@@ -649,7 +649,6 @@ export function FormulirEdit() {
               {post.kelurahan}
             </Typography>
           )}
-
           <div>
             <Typography variant="h6" color="blue-gray" className="mb-1">
               Nomor RT
