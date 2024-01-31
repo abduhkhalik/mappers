@@ -341,6 +341,7 @@ export function Formulir() {
           <Select
             className="bg-white"
             onChange={(value) => setKecamatan(value)}
+            aria-required
           >
             {dataKec.map((item, index) => (
               <Option key={index} value={item.value}>
@@ -354,6 +355,7 @@ export function Formulir() {
           <Select
             className="bg-white"
             onChange={(value) => setKelurahan(value)}
+            aria-required
           >
             {dataKel.map((item, index) => (
               <Option key={index} value={item.value}>

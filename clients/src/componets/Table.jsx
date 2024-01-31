@@ -18,6 +18,8 @@ import {
 const TABLE_HEAD = [
   "Nomor",
   "Nama Lengkap",
+  "Kecamatan",
+  "Kelurahan",
   "Nomor KK",
   "Nomor KTP",
   "No RT",
@@ -76,8 +78,10 @@ export function SortableTable() {
 
   const handleSearch = (data, searchTerm) => {
     const filteredData = data.filter((row) =>
-      Object.entries(row).some(([key, value]) =>
-        key !== "name" && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      Object.entries(row).some(
+        ([key, value]) =>
+          key !== "name" &&
+          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
     filteredData.sort((a, b) => {
@@ -85,7 +89,6 @@ export function SortableTable() {
     });
     return filteredData;
   };
-  
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -190,6 +193,8 @@ export function SortableTable() {
                     {
                       _id,
                       name,
+                      kecamatan,
+                      kelurahan,
                       no_kk,
                       no_ktp,
                       no_rt,
@@ -230,6 +235,28 @@ export function SortableTable() {
                                 {name}
                               </Typography>
                             </div>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {kecamatan}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex flex-col">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {kelurahan}
+                            </Typography>
                           </div>
                         </td>
                         <td className={classes}>
@@ -389,7 +416,18 @@ export function SortableTable() {
           <tbody>
             {currentPrint.map(
               (
-                { name, no_kk, no_ktp, no_rt, no_rw, no_tps, no_hp, simpul },
+                {
+                  name,
+                  kecamatan,
+                  kelurahan,
+                  no_kk,
+                  no_ktp,
+                  no_rt,
+                  no_rw,
+                  no_tps,
+                  no_hp,
+                  simpul,
+                },
                 index
               ) => {
                 const isLast = index === TABLE_ROWS.length - 1;
@@ -422,6 +460,28 @@ export function SortableTable() {
                             {name}
                           </Typography>
                         </div>
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {kecamatan}
+                        </Typography>
+                      </div>
+                    </td>
+                    <td className={classes}>
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {kelurahan}
+                        </Typography>
                       </div>
                     </td>
                     <td className={classes}>
