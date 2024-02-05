@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import { Context } from "../context/Context.jsx";
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { dataKec, dataKel } from "../data.js";
 
 export function LoginCard() {
@@ -482,6 +482,7 @@ export function FormulirEdit() {
   const [kecamatan, setKecamatan] = useState("");
   const [simpul, setSimpul] = useState("");
   const [updateMode, setUpdateMode] = useState(false);
+  const Navigate = useNavigate();
 
   useEffect(() => {
     const getPost = async () => {
@@ -531,6 +532,17 @@ export function FormulirEdit() {
       window.location.reload();
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_KEY_URL}/posts/${id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      alert("Data Berhasil Terhapus");
+      Navigate("/");
+    }
+  };
   return (
     <Card color="transparent" shadow={false}>
       <div className="flex flex-col justify-center items-center">
@@ -538,9 +550,14 @@ export function FormulirEdit() {
           Formulir Edit Data Calon Pemilih MAP
         </Typography>
         {!updateMode && (
-          <Button className="mt-5" onClick={() => setUpdateMode(true)}>
-            Edit
-          </Button>
+          <div className="flex justify-center items-center gap-5">
+            <Button className="mt-5" onClick={() => setUpdateMode(true)}>
+              Edit
+            </Button>
+            <Button className="mt-5" onClick={handleDelete}>
+              Hapus
+            </Button>
+          </div>
         )}
       </div>
       <form className="mt-2 mb-2 w-full max-w-screen-xl px-4 py-2 bg-white rounded-lg">
