@@ -30,7 +30,7 @@ const TABLE_HEAD = [
 ];
 
 import { useReactToPrint } from "react-to-print";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 export function SortableTable() {
@@ -76,19 +76,19 @@ export function SortableTable() {
   const currentItems = TABLE_ROWS.slice(indexOfFirstItem, indexOfLastItem);
   const currentPrint = TABLE_ROWS.slice(indexOfFirstPrint, indexOfLastPrint);
 
-  const handleSearch = (data, searchTerm) => {
-    const filteredData = data.filter((row) =>
-      Object.entries(row).some(
-        ([key, value]) =>
-          key !== "name" &&
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    filteredData.sort((a, b) => {
-      return a.no_tps - b.no_tps;
-    });
-    return filteredData;
-  };
+  const handleSearch = useMemo(() => {
+    return (data, searchTerm) => {
+      const filteredData = data.filter((row) =>
+        Object.entries(row).some(
+          ([key, value]) =>
+            key !== "name" &&
+            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+      filteredData.sort((a, b) => a.no_tps - b.no_tps);
+      return filteredData;
+    };
+  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -98,8 +98,7 @@ export function SortableTable() {
           `${import.meta.env.VITE_API_KEY_URL}/posts`
         );
         const postData = res.data;
-        const filteredData = handleSearch(postData, searchTerm);
-        setPosts(filteredData);
+        setPosts(() => handleSearch(postData, searchTerm));
       } catch (err) {
         console.log(err);
       } finally {
@@ -107,7 +106,7 @@ export function SortableTable() {
       }
     };
     fetchPost();
-  }, [searchTerm]);
+  }, [searchTerm, handleSearch]);
 
   return (
     <>
@@ -205,7 +204,7 @@ export function SortableTable() {
                     },
                     index
                   ) => {
-                    const isLast = index === TABLE_ROWS.length - 1;
+                    const isLast = index === currentItems.length - 1;
                     const classes = isLast
                       ? "p-4"
                       : "p-4 border-b border-blue-gray-50";
@@ -430,7 +429,7 @@ export function SortableTable() {
                 },
                 index
               ) => {
-                const isLast = index === TABLE_ROWS.length - 1;
+                const isLast = index === currentPrint.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
