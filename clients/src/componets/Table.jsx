@@ -36,10 +36,11 @@ import { Link } from "react-router-dom";
 export function SortableTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(50);
-  const [printPerPage] = useState(10000);
+  const [printPerPage] = useState(900);
   const [isLoading, setIsLoading] = useState(false);
   const [TABLE_ROWS, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State untuk nilai pencarian
+
   const handleExportCSV = () => {
     const header = Object.keys(TABLE_ROWS[0]);
     // Menyiapkan data
@@ -54,7 +55,7 @@ export function SortableTable() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "table_data.csv");
+    link.setAttribute("download", "data.csv");
     document.body.appendChild(link);
 
     link.click();
@@ -78,13 +79,16 @@ export function SortableTable() {
 
   const handleSearch = useMemo(() => {
     return (data, searchTerm) => {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
       const filteredData = data.filter((row) =>
         Object.entries(row).some(
           ([key, value]) =>
             key !== "name" &&
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            String(value).toLowerCase().includes(lowerCaseSearchTerm)
         )
       );
+
       filteredData.sort((a, b) => a.no_tps - b.no_tps);
       return filteredData;
     };
@@ -375,7 +379,6 @@ export function SortableTable() {
           </div>
         </CardFooter>
       </Card>
-
       <table
         ref={componentRef}
         className="mt-4 w-full min-w-max table-auto text-left hidden print:block"
@@ -449,7 +452,6 @@ export function SortableTable() {
                     </td>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
-                        {/* <Avatar src={img} alt={name} size="sm" /> */}
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
@@ -557,6 +559,7 @@ export function SortableTable() {
           </tbody>
         )}
       </table>
+      ;
     </>
   );
 }
