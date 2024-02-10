@@ -122,6 +122,7 @@ export function DaftarCard() {
       setIsLoading(false);
       res.data && window.location.replace("/login");
     } catch (err) {
+      console.log(err)
       setError(true);
     }
   };

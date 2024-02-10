@@ -30,16 +30,17 @@ const TABLE_HEAD = [
 ];
 
 import { useReactToPrint } from "react-to-print";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 export function SortableTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(50);
-  const [printPerPage] = useState(900);
+  const [itemsPerPage] = useState(30);
+  const [printPerPage] = useState(5000);
   const [isLoading, setIsLoading] = useState(false);
   const [TABLE_ROWS, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State untuk nilai pencarian
+  const [searchTermInput, setSearchTermInput] = useState("");
 
   const handleExportCSV = () => {
     const header = Object.keys(TABLE_ROWS[0]);
@@ -55,7 +56,7 @@ export function SortableTable() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "data.csv");
+    link.setAttribute("download", "table_data.csv");
     document.body.appendChild(link);
 
     link.click();
@@ -77,21 +78,19 @@ export function SortableTable() {
   const currentItems = TABLE_ROWS.slice(indexOfFirstItem, indexOfLastItem);
   const currentPrint = TABLE_ROWS.slice(indexOfFirstPrint, indexOfLastPrint);
 
-  const handleSearch = useMemo(() => {
-    return (data, searchTerm) => {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  const handleSearch = useCallback((data, searchTerm) => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-      const filteredData = data.filter((row) =>
-        Object.entries(row).some(
-          ([key, value]) =>
-            key !== "name" &&
-            String(value).toLowerCase().includes(lowerCaseSearchTerm)
-        )
-      );
+    const filteredData = data.filter((row) =>
+      Object.entries(row).some(
+        ([key, value]) =>
+          key !== "name" &&
+          String(value).toLowerCase().includes(lowerCaseSearchTerm)
+      )
+    );
 
-      filteredData.sort((a, b) => a.no_tps - b.no_tps);
-      return filteredData;
-    };
+    filteredData.sort((a, b) => a.no_tps - b.no_tps);
+    return filteredData;
   }, []);
 
   useEffect(() => {
@@ -111,6 +110,14 @@ export function SortableTable() {
     };
     fetchPost();
   }, [searchTerm, handleSearch]);
+
+  const handleSearchInputChange = (event) => {
+    setSearchTermInput(event.target.value);
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchTerm(searchTermInput); // Setel searchTerm dengan nilai dari input pencarian
+  };
 
   return (
     <>
@@ -143,13 +150,14 @@ export function SortableTable() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="w-full md:w-72">
+            <div className="flex items-center gap-2 w-full md:w-72">
               <Input
                 label="Search"
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTermInput}
+                onChange={handleSearchInputChange}
               />
+              <Button onClick={handleSearchButtonClick}>Search</Button>
             </div>
           </div>
         </CardHeader>
