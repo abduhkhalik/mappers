@@ -36,7 +36,7 @@ import { Link } from "react-router-dom";
 export function SortableTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(30);
-  const [printPerPage] = useState(5000);
+  const [printPerPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [TABLE_ROWS, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State untuk nilai pencarian
@@ -387,6 +387,7 @@ export function SortableTable() {
           </div>
         </CardFooter>
       </Card>
+
       <table
         ref={componentRef}
         className="mt-4 w-full min-w-max table-auto text-left hidden print:block"
@@ -567,7 +568,6 @@ export function SortableTable() {
           </tbody>
         )}
       </table>
-      ;
     </>
   );
 }
