@@ -36,7 +36,7 @@ import { Link } from "react-router-dom";
 export function SortableTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(30);
-  const [printPerPage] = useState(1);
+  const [printPerPage] = useState(5000);
   const [isLoading, setIsLoading] = useState(false);
   const [TABLE_ROWS, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State untuk nilai pencarian

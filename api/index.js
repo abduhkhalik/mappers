@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO_BASE_URL)
+  .connect(process.env.MONGO_BASE_URL, { useUnifiedTopology: true })
   .then(() => console.log("Database Connected!!"))
   .catch((err) => {
     console.error("Error connecting to database:", err);
